@@ -5,7 +5,7 @@ from db import addNote, deleteNote, listNote, updateNote
 def all(event, context):
     items = []
     for item in listNote():
-        item["_id"] = str(item["_id"])[10:-2]
+        item["_id"] = str(item["_id"])
         items.append(item)
     body = {
        "notes": items
@@ -28,23 +28,24 @@ def all(event, context):
     """
 
 def save(event, context):
-    data = eval(eval(event)['body'])
+    data = json.loads(event.get('body'))
+    #print(data)
     return {
         "statusCode": 200,
-        "body": addNote(data['title'], data['note'])
+        "body": str(addNote(data['title'], data['note']))
     }
 
 def edit(event, context):
-    data = eval(eval(event)['body'])
+    data = json.loads(event.get('body'))
     return {
         "statusCode": 200,
         "body": updateNote(data['id'], data['title'], data['note'])
     }
 
 def remove(event, cotext):
-    data = json.loads(event.body)
+    data = json.loads(event.get('body'))
     return {
         "statusCode": 200,
-        "body": deleteNote(data.id)
+        "body": deleteNote(data['id'])
     }
 

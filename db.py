@@ -1,4 +1,5 @@
 import pymongo
+from bson.objectid import ObjectId
 
 #pymongo is a library to access mongodb server
 
@@ -12,19 +13,19 @@ def addNote(title, note):
     return db.notes.insert_one({
         "title":title,
         "note":note
-    })
+    }).inserted_id
 
 # mongo will create id for each entry
 
 def deleteNote(id):
-    return db.notes.remove({"_id":id})
+    return db.notes.delete_one({"_id":ObjectId(id)}).deleted_count
 
 
 def updateNote(id, title, note):
-    return db.notes.replace({"_id":id},{  #update syntax: find, what to replace
+    return db.notes.replace_one({"_id":ObjectId(id)},{  #update syntax: find, what to replace
         "title":title,
         "note":note
-    })    
+    }).modified_count    
 
 def listNote():  #to list all the notes
     return db.notes.find() 
